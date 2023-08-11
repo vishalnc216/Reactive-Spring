@@ -3,7 +3,9 @@ package com.learnreactiveprogramming.service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 public class FluxAndMonoGeneratorService {
          public Flux<String> namesFlux(){
@@ -40,6 +42,16 @@ public class FluxAndMonoGeneratorService {
                 .flatMap(s-> splitString(s));
     }
 
+    public  Flux<String> nameFlux_filterMap_delay(){
+        return Flux.fromIterable(List.of("mike","harvey","kshitij"))
+
+                .flatMap(s-> splitStringWithDelay(s));
+    }
+    private Flux<String> splitStringWithDelay(String s){
+             var charArray = s.split("");
+             var time = 200;
+             return Flux.fromArray(charArray).delayElements(Duration.ofMillis(time));
+    }
     private Flux<String> splitString(String s) {
         var charArray = s.split("");
         return Flux.fromArray(charArray);
@@ -50,13 +62,24 @@ public class FluxAndMonoGeneratorService {
 
         FluxAndMonoGeneratorService service = new FluxAndMonoGeneratorService();
 
-        service.nameFlux_filterMap(4).subscribe(name -> {
-            System.out.println(name);
-        });
+//        service.nameFlux_filterMap(4).subscribe(name -> {
+//            System.out.println(name);
+//        });
+//
+//        service.namesMono().subscribe(name -> {
+//            System.out.println("Mono name is :" + name);
+//        });
 
-        service.namesMono().subscribe(name -> {
-            System.out.println("Mono name is :" + name);
-        });
+        service.nameFlux_filterMap_delay().subscribe(
+                name->{
+                    System.out.println(name);
+                }
+        );
 
+        try {
+            Thread.sleep(5000); // Wait for 3 seconds (adjust this as needed)
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

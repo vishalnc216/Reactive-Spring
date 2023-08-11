@@ -63,4 +63,15 @@ class FluxAndMonoGeneratorServiceTest {
 
 
     }
+
+    @Test
+    void nameFlux_filterMap_delay() {
+        var nameFlux = service.nameFlux_filterMap_delay();
+
+        StepVerifier.create(nameFlux)
+                .expectNext("m","i","k","e","h","a","r","v","e","y","k","s","h","i","t","i","j")
+                .verifyComplete();
+
+
+    }
 }
